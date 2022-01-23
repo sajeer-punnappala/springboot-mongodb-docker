@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'server-training'
+version = '0.0.1'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+bootJar {
+  layered {
+    enabled = true
+
+    application {
+      intoLayer("spring-boot-loader") {
+        include "org/springframework/boot/loader/**"
+      }
+      intoLayer("application")
+    }
+    
+    dependencies {
+      intoLayer("snapshot-dependencies") {
+        include "*:*:*SNAPSHOT"
+      }
+      intoLayer("dependencies")
+    }
+
+    layerOrder = ["dependencies", "spring-boot-loader", "snapshot-dependencies", "application"]
+  }
+}
+
+test {
+	useJUnitPlatform()
+}
